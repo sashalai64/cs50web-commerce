@@ -7,16 +7,16 @@ class User(AbstractUser):
     
 class Category(models.Model):
     CATEGORIES = [
-        ('1', 'Art'),
-        ('2', 'Clothing & Accessories'),
-        ('3', 'Electronics'),
-        ('4', 'Home Goods'),
-        ('5', 'Sports & Outdoor'),
-        ('6', 'Books & Media'),
-        ('7', 'Others'),
+        ('Art', 'Art'),
+        ('Clothing & Accessories', 'Clothing & Accessories'),
+        ('Electronics', 'Electronics'),
+        ('Home Goods', 'Home Goods'),
+        ('Sports & Outdoor', 'Sports & Outdoor'),
+        ('Books & Media', 'Books & Media'),
+        ('Others', 'Others')
     ]
 
-    category = models.CharField(max_length = 100, choices = CATEGORIES, default = 'Others')
+    category = models.CharField(max_length = 100, choices= CATEGORIES, default = CATEGORIES[6][1])
 
     def __str__(self):
         return self.category
