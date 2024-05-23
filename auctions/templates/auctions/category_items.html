@@ -1,0 +1,37 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+<h2>{{category_name}}</h2>
+
+{% if listings.count == 0 %}
+    <p>No active listings in this category.</p>
+    
+{% else %}
+<div class="container mt-5">
+    <div class="row">
+        {% for listing in listings %}
+            <div class="col-md-12 mb-4">
+                <div class="card shadow-sm">
+                    <div class="row no-gutters">
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ listing.item }}</h5>
+                                <b class="card-text">Price: ${{ listing.startingBid }}</b>
+                                <p class="card-text mt-3">{{ listing.description }}</p>
+                                <p class="card-text custom-text">Created {{ listing.time }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            {% if listing.image %}
+                            <img src="{{ listing.image.url }}" class="custom-image" alt="{{ listing.item }}">
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
