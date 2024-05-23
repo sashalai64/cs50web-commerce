@@ -4,6 +4,10 @@ body {
     padding: 20px;
 }
 
+h2 {
+    color:darkslategrey;
+}
+
 /* Card styles */
 .card {
     transition: transform 0.3s ease;
@@ -38,4 +42,23 @@ body {
 .custom-text {
 font-size: 0.75em;  
 color: grey;    
+}
+
+/* Category styles */
+.category-list {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0; /* Remove default padding */
+    max-width: 600px;
+    margin: 20px auto; /* Center the list */
+    border: 1px solid #ddd;
+    border-radius: 2ex; /* Round the corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+.category-item {
+    text-align: center;
+    padding: 15px;
+    font-size: 18px;
+    color: #555;
+    transition: background-color 0.3s; 
 }

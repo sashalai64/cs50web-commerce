@@ -91,3 +91,21 @@ def create(request):
             return render(request, "auctions/create.html", {
                 "listing_form": form
             })
+        
+
+def category_list(request):
+    categories = [category[0] for category in Listing._meta.get_field('category').choices]
+
+    return render(request, "auctions/category_list.html", {
+        "categories": categories
+    })
+
+
+def category_items(request, category_name):
+    listings = Listing.objects.filter(category=category_name, active=True)
+
+    return render(request, "auctions/category_items.html", {
+        "listings": listings,
+        "category_name": category_name
+    })
+    
