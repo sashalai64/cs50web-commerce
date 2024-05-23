@@ -5,22 +5,6 @@ from django.db import models
 class User(AbstractUser):
     pass
     
-class Category(models.Model):
-    CATEGORIES = [
-        ('Art', 'Art'),
-        ('Clothing & Accessories', 'Clothing & Accessories'),
-        ('Electronics', 'Electronics'),
-        ('Home Goods', 'Home Goods'),
-        ('Sports & Outdoor', 'Sports & Outdoor'),
-        ('Books & Media', 'Books & Media'),
-        ('Others', 'Others')
-    ]
-
-    category = models.CharField(max_length = 100, choices= CATEGORIES, default = CATEGORIES[6][1])
-
-    def __str__(self):
-        return self.category
-    
 
 class Listing(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "listings") #access all listings created by a specific user using "user.listings.all()"
@@ -28,11 +12,19 @@ class Listing(models.Model):
     description = models.TextField()
     startingBid = models.DecimalField(max_digits = 10, decimal_places = 2)
     currentBid = models.DecimalField(max_digits = 10, decimal_places = 2, blank = True, null = True)
-    category = models.ForeignKey(Category, on_delete = models.CASCADE ,related_name = "listings")
     time = models.DateTimeField(auto_now = True)
     image = models.ImageField(null = True, blank = True)
     active = models.BooleanField(default = True)
     winner = models.CharField(max_length = 100, null = True, blank = True)
+    category = models.CharField(max_length = 50, choices = [
+        ('Art', 'Art'),
+        ('Clothing & Accessories', 'Clothing & Accessories'),
+        ('Electronics', 'Electronics'),
+        ('Home Goods', 'Home Goods'),
+        ('Sports & Outdoor', 'Sports & Outdoor'),
+        ('Books & Media', 'Books & Media'),
+        ('Others', 'Others')], 
+        default='Others')
 
     def __str__(self):
         return f'{self.user}: listed an item "{self.item}" for ${self.startingBid}'
