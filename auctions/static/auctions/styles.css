@@ -1,3 +1,41 @@
+/* styles.css */
 body {
-    padding: 10px;
+    font-family: 'Roboto', sans-serif;
+    padding: 20px;
+}
+
+/* Card styles */
+.card {
+    transition: transform 0.3s ease;
+    border-radius: 2ex;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-title {
+    font-weight: bold;
+}
+
+.card-text {
+    color: #555;
+}
+
+/* Container styles */
+.container {
+    max-width: 1200px;
+}
+
+/* Active listing styles */
+.custom-image {
+    max-width: 300px;  /* Maximum width for the images */
+    max-height: 300px;
+    width: auto;       /* Maintain aspect ratio */
+    height: auto;      
+}
+
+.custom-text {
+font-size: 0.75em;  
+color: grey;    
 }
