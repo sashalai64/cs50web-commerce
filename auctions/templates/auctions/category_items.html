@@ -1,12 +1,10 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-
-<h2>{{category_name}}</h2>
+<h2>{{ category_name }}</h2>
 
 {% if listings.count == 0 %}
     <p>No active listings in this category.</p>
-    
 {% else %}
 <div class="container mt-5">
     <div class="row">
@@ -16,8 +14,17 @@
                     <div class="row no-gutters">
                         <div class="col-md-8">
                             <div class="card-body">
-                                <h5 class="card-title">{{ listing.item }}</h5>
-                                <b class="card-text">Price: ${{ listing.startingBid }}</b>
+                                <a href="{% url 'listing_detail' listing.id %}">
+                                    <h5 class="card-title">{{ listing.item }}</h5>
+                                </a>
+                                <b class="card-text">
+                                    Price: $
+                                    {% if listing.currentBid %}
+                                        {{ listing.currentBid }}
+                                    {% else %}
+                                        {{ listing.startingBid }}
+                                    {% endif %}
+                                </b>
                                 <p class="card-text mt-3">{{ listing.description }}</p>
                                 <p class="card-text custom-text">Created {{ listing.time }}</p>
                             </div>

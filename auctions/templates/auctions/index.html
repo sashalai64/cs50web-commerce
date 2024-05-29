@@ -16,7 +16,9 @@
                     <div class="row no-gutters">
                         <div class="col-md-8">
                             <div class="card-body">
-                                <h5 class="card-title">{{listing.item}}</h5>
+                                <a href="{% url 'listing_detail' listing.id %}">
+                                    <h5 class="card-title">{{ listing.item }}</h5>
+                                </a>
                                 <b class="card-text">Price: ${{listing.startingBid}}</b>
                                 <p class="card-text mt-3">{{listing.description}}</p>
                                 <p class="card-text custom-text">Created {{listing.time}}</p>

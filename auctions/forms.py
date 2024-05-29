@@ -27,3 +27,29 @@ class NewListingForm(forms.ModelForm):
                 'class': 'form-control form-group'
             })
         }
+
+
+class BidForm(forms.ModelForm):
+    class Meta:
+        model = Bid
+        fields = ["price"]
+        labels = {'price': ''}
+        widgets = {
+            'price': forms.NumberInput(attrs={
+                'placeholder': 'Bid',
+                'class': 'form-control form-group', 
+                'min': Listing.currentBid if Listing.currentBid else Listing.startingBid,
+                'step': '0.1'
+            })
+        }
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['comment']
+        widgets = {
+            'comment': forms.TextInput(attrs={
+                'class': 'form-control form-group'
+            })
+        }

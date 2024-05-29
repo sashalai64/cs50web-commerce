@@ -11,7 +11,7 @@ from .forms import *
 
 def index(request):
     #order listings which are active from new -> old
-    listings = Listing.objects.filter(active=True).order_by('-time') 
+    listings = Listing.objects.all().order_by('-time') 
     return render(request, 'auctions/index.html', {
         'listings': listings,
         'title': "Active Listings"
@@ -82,7 +82,7 @@ def create(request):
 
         if form.is_valid():
             newListing = form.save(commit = False)
-            newListing.user = request.user
+            newListing.user = request.user #assign foreign key
             newListing.save()
 
             return HttpResponseRedirect(reverse('index'))
@@ -102,10 +102,125 @@ def category_list(request):
 
 
 def category_items(request, category_name):
-    listings = Listing.objects.filter(category=category_name, active=True)
+    listings = Listing.objects.filter(category=category_name)
 
     return render(request, "auctions/category_items.html", {
         "listings": listings,
         "category_name": category_name
     })
+
+
+def listing_detail(request, listing_id):
+    listing_item = Listing.objects.get(pk = listing_id)
+    bid = Bid.objects.filter(item = listing_item)
+    comment = Comment.objects.filter(item = listing_item)
     
+    #check if highest bidder
+    highest_bid = bid.first()
+    is_highest_bidder = False
+    if highest_bid and highest_bid.user == request.user:
+        is_highest_bidder = True
+
+    if request.method == 'POST':
+        if not listing_item.closed:
+            #if clicked 'Close' button
+            if request.POST.get("button") == 'Close':
+                if request.user.is_authenticated:
+                    listing_item.closed = True
+                    listing_item.save()
+
+                else:
+                    return HttpResponseRedirect(reverse('login')) #redirect to login page if not logged in
+
+
+        #if clicked 'Watchlist' button
+        if request.POST.get("button") == 'Watchlist':
+            if request.user.is_authenticated:
+                if not WatchList.objects.filter(user = request.user, item = listing_item):
+                    watchlist = WatchList()
+                    watchlist.user = request.user
+                    watchlist.item = listing_item
+                    watchlist.save()
+                    message = "Item added to Watchlist."
+
+                else:
+                    message = "Item already in Watchlist."
+
+                return render(request, "auctions/listing_detail", {
+                        "listing": listing_item,
+                        "bid_form": BidForm(),
+                        "comment_form": CommentForm(),
+                        "bid": bid,
+                        "comment": comment,
+                        "message": message,
+                        "is_highest_bidder": is_highest_bidder
+                    })
+                
+            else:
+                return HttpResponseRedirect(reverse('login')) #redirect to login page if not logged in
+
+
+        
+        #if clicked 'Bid' button
+        if request.POST.get("button") == 'Place Bid':
+            if request.user.is_authenticated:
+                bid_form = BidForm(request.POST)
+
+                if bid_form.is_valid():
+                    new_bid = bid_form.save(commit=False)
+                    new_bid.user = request.user
+                    new_bid.item = listing_item
+                    new_bid.save()
+
+                    listing_item.currentBid = new_bid.price
+                    listing_item.save()
+
+                    return HttpResponseRedirect(reverse('listing_detail', args=(listing_id, )))
+            
+                else:
+                    return render(request, "auctions/listing_detail.html", {
+                        "listing": listing_item,
+                        "bid_form": bid_form,
+                        "comment_form": CommentForm(),
+                        "bid": bid,
+                        "comment": comment,
+                        "is_highest_bidder": is_highest_bidder
+                    })
+            else:
+                return HttpResponseRedirect(reverse('login')) #redirect to login page if not logged in
+        
+
+        #if clicked 'Comment' button
+        if request.POST.get("button") == "Comment":
+            if request.user.is_authenticated:
+                comment_form = CommentForm(request.POST)
+
+                if comment_form.is_valid():
+                    new_comment = comment_form.save(commit=False)
+                    new_comment.user = request.user
+                    new_comment.item = listing_item
+                    new_comment.save()
+
+                    return HttpResponseRedirect(reverse('listing_detail', args=(listing_id, )))
+                
+                else:
+                    return render(request, "auctions/listing_detail.html", {
+                        "listing": listing_item,
+                        "bid_form": BidForm(),
+                        "comment_form": comment_form,
+                        "bid": bid,
+                        "comment": comment,
+                        "is_highest_bidder": is_highest_bidder
+                    })
+            
+            else:
+                return HttpResponseRedirect(reverse('login')) #redirect to login page if not logged in
+
+    return render(request, "auctions/listing_detail.html", {
+        "listing": listing_item,
+        "bid_form": BidForm(),
+        "comment_form": CommentForm(),
+        "bid": bid,
+        "comment": comment,
+        "is_highest_bidder": is_highest_bidder
+    })

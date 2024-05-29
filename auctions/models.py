@@ -14,7 +14,7 @@ class Listing(models.Model):
     currentBid = models.DecimalField(max_digits = 10, decimal_places = 2, blank = True, null = True)
     time = models.DateTimeField(auto_now = True)
     image = models.ImageField(null = True, blank = True)
-    active = models.BooleanField(default = True)
+    closed = models.BooleanField(default = False)
     winner = models.CharField(max_length = 100, null = True, blank = True)
     category = models.CharField(max_length = 50, choices = [
         ('Art', 'Art'),
