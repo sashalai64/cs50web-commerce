@@ -65,6 +65,10 @@ color: grey;
 
 .listing-button {
     text-align: center;
-    padding: 5px;
-    border-radius: 2ex;
+    color: white;
+    background-color: lightslategrey;
+    padding: 8px;
+    margin: 3px;
+    border-radius: 2px;
+    border-color: lightslategrey;
 }

@@ -124,7 +124,7 @@ def listing_detail(request, listing_id):
     if request.method == 'POST':
         if not listing_item.closed:
             #if clicked 'Close' button
-            if request.POST.get("button") == 'Close':
+            if request.POST.get("button") == 'Close' and request.user == listing_item.user:
                 if request.user.is_authenticated:
                     listing_item.closed = True
                     listing_item.save()
@@ -133,10 +133,10 @@ def listing_detail(request, listing_id):
                     return HttpResponseRedirect(reverse('login')) #redirect to login page if not logged in
 
 
-        #if clicked 'Add to Watchlist' button
-        if request.POST.get("button") == 'Add to Watchlist':
+        #if clicked 'Watchlist' button
+        if request.POST.get("button") == 'Watchlist':
             if request.user.is_authenticated:
-                if not WatchList.objects.filter(user = request.user, item = listing_item).exists():
+                if not WatchList.objects.filter(user = request.user, item = listing_item):
                     #WatchList.objects.create(user=request.user, item=listing_item)
                     watchlist = WatchList()
                     watchlist.user = request.user
@@ -148,13 +148,13 @@ def listing_detail(request, listing_id):
                     WatchList.objects.filter(user = request.user, item = listing_item).delete()
                     message = "Item removed from Watchlist."
 
-                return render(request, "auctions/listing_detail", {
+                return render(request, "auctions/listing_detail.html", {
                         "listing": listing_item,
                         "bid_form": BidForm(),
                         "comment_form": CommentForm(),
                         "bid": bid,
                         "comment": comment,
-                        "watchlist_message": message,
+                        "message": message,
                         "is_highest_bidder": is_highest_bidder
                     })
                 
@@ -166,28 +166,45 @@ def listing_detail(request, listing_id):
         if request.POST.get("button") == 'Place Bid':
             if request.user.is_authenticated:
                 bid_form = BidForm(request.POST)
+                bid_price = float(request.POST['price'])
+                min_bid = listing_item.currentBid if listing_item.currentBid else listing_item.startingBid
 
+                #only allow non-owers place bids
+                if request.user != listing_item.user:
+                    if bid_price <= min_bid:
+                        return render(request, "auctions/listing_detail.html", {
+                            "listing": listing_item,
+                            "bid_form": bid_form,
+                            "comment_form": CommentForm(),
+                            "bid": bid,
+                            "comment": comment,
+                            "is_highest_bidder": is_highest_bidder,
+                            "message": "Bid must be higher than current bid."
+                        })
                 
-                if bid_form.is_valid():
-                    new_bid = bid_form.save(commit=False)
-                    new_bid.user = request.user
-                    new_bid.item = listing_item
-                    new_bid.save()
+                    if bid_form.is_valid():
+                        new_bid = bid_form.save(commit=False)
+                        new_bid.user = request.user
+                        new_bid.item = listing_item
+                        new_bid.save()
 
-                    listing_item.currentBid = new_bid.price
-                    listing_item.save()
+                        listing_item.currentBid = new_bid.price
+                        listing_item.save()
 
-                    return HttpResponseRedirect(reverse('listing_detail', args=(listing_id, )))
-            
+                        return HttpResponseRedirect(reverse('listing_detail', args=(listing_id, )))
                 else:
-                    return render(request, "auctions/listing_detail.html", {
-                        "listing": listing_item,
-                        "bid_form": bid_form,
-                        "comment_form": CommentForm(),
-                        "bid": bid,
-                        "comment": comment,
-                        "is_highest_bidder": is_highest_bidder
-                    })
+                    message = "You can't bid on your own listing."
+
+                return render(request, "auctions/listing_detail.html", {
+                    "listing": listing_item,
+                    "bid_form": bid_form,
+                    "comment_form": CommentForm(),
+                    "bid": bid,
+                    "comment": comment,
+                    "is_highest_bidder": is_highest_bidder,
+                    "message": message
+                })
+            
             else:
                 return HttpResponseRedirect(reverse('login')) #redirect to login page if not logged in
         
@@ -229,7 +246,7 @@ def listing_detail(request, listing_id):
 
 
 def watchlist(request):
-    watchlist = WatchList.objects.filter(user = request.user)
+    watchlist = request.user.watchlist_items.all()
 
     return render(request, "auctions/watchlist.html", {
         "watchlist": watchlist

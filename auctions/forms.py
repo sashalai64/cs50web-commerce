@@ -38,7 +38,6 @@ class BidForm(forms.ModelForm):
             'price': forms.NumberInput(attrs={
                 'placeholder': 'Bid',
                 'class': 'form-control form-group', 
-                'min': Listing.currentBid if Listing.currentBid else Listing.startingBid,
                 'step': '0.1'
             })
         }
