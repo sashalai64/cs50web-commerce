@@ -1,7 +1,7 @@
 # CS50's Web Programming with Python and JavaScript
 
 # Project 2 - Commerce
-Website: https://cs50.harvard.edu/web/2020/projects/2/commerce/
+[Project Description](https://cs50.harvard.edu/web/2020/projects/2/commerce/)
 
 ## Overview
 This project is an eBay-like e-commerce auction platform that enables users to post auction listings, place bids on items, comment on listings, and manage a personalized watchlist. 
