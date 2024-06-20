@@ -38,7 +38,7 @@ This project is an eBay-like e-commerce auction platform that enables users to p
       git clone https://github.com/sashalai64/cs50web-commerce.git
       ```
       
-2. Apply migrations:
+2. **Apply migrations**
     ```
     python manage.py makemigrations
     ```
@@ -46,7 +46,7 @@ This project is an eBay-like e-commerce auction platform that enables users to p
     python manage.py migrate
     ```
 
-4. **Create a superuser:**
+4. **Create a superuser**
     ```
     python manage.py createsuperuser
     ```
