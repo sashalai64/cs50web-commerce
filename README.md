@@ -46,7 +46,7 @@ This project is an eBay-like e-commerce auction platform that enables users to p
     python manage.py migrate
     ```
 
-4. **Create a superuser**
+3. **Create a superuser**
     ```
     python manage.py createsuperuser
     ```
@@ -55,7 +55,7 @@ This project is an eBay-like e-commerce auction platform that enables users to p
       ```
       python manage.py runserver
       ```
-3. **Access the Application**
+5. **Access the Application**
    
     Visit `http://127.0.0.1:8000/` in your browser.
     
